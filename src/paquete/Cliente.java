@@ -19,33 +19,38 @@ public class Cliente {
 
 	public void iniciarCliente() {
 		try {
-			//getHost();
 			Socket socket = new Socket(HOST, 1090);
 
 			DataOutputStream flujoSalida = new DataOutputStream(socket.getOutputStream());
 			DataInputStream flujoEntrada = new DataInputStream(socket.getInputStream());
-			
+
 			Scanner scanner = new Scanner(System.in);
+
+			System.out.print("Ingrese su nombre de usuario: ");
+			String nombreUsuario = scanner.nextLine();
+
+			flujoSalida.writeUTF(nombreUsuario);
 			
-			while (true) {
-				System.out.print("$user > ");
-				String msg = scanner.nextLine();
-				
-				flujoSalida.writeUTF(msg);
-				
-				String respuesta = flujoEntrada.readUTF();
-				System.out.println(respuesta);
+			String respuesta = flujoEntrada.readUTF();
+			
+			if (respuesta.equalsIgnoreCase("ok")) {
+				System.out.println("Bienvenido, " + nombreUsuario + "!");
+				while (true) {
+					System.out.print("$" + nombreUsuario + " > ");
+					String msg = scanner.nextLine();
+					flujoSalida.writeUTF(msg);
+					respuesta = flujoEntrada.readUTF();
+				}
+			} else {
+				System.out.println("[ + ] Error: Nombre de usuario ya existe");
+				iniciarCliente();
 			}
+
+			
 
 		} catch (Exception e) {
 			System.out.println("[ - ] Error: No se puede conectar con el host. " + e.getMessage());
 
 		}
 	}
-	
-	/*public void getHost() {
-		Scanner scanner = new Scanner(System.in);
-		System.out.print("Ingrese el nombre del host al que desea conectarse: ");
-		HOST = scanner.nextLine();
-	}*/
 }
