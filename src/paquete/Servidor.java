@@ -11,9 +11,11 @@ public class Servidor {
 	private static final int PUERTO = 1090;
 
 	private List<Jugador> listaJugadores;
+	private Quiz quiz;
 
 	public Servidor() {
 		this.listaJugadores = new ArrayList<Jugador>();
+		this.quiz = new Quiz();
 	}
 
 	public static void main(String[] args) {
@@ -22,9 +24,13 @@ public class Servidor {
 	}
 
 	public void iniciarServidor() {
+		
+		agregarPregunta("1 + 1 = ?",new String[] {"2", "4", "5", "1"}, "2");
+		agregarPregunta("1 + 7 = ?",new String[] {"2", "8", "5", "1"}, "8");
+		
 		try (ServerSocket servidor = new ServerSocket(PUERTO)) {
 			System.out.println("[ + ] Servidor iniciado. Esperando conexiones . . .\n");
-
+			quiz.mostrarPreguntas();
 			while (true) {
 				Socket clienteSocket = servidor.accept();
 				System.out.println("[ * ] Nuevo cliente conectado: " + clienteSocket.getRemoteSocketAddress());
@@ -73,6 +79,12 @@ public class Servidor {
             }
         }
     }
+	
+	public void agregarPregunta(String pregunta, String[] opcs, String resCorrecta) {
+		Pregunta p = new Pregunta(pregunta, opcs, resCorrecta);
+		quiz.agregarPregunta(p);
+	}
+
 }
 
 class ManejadorDeCliente implements Runnable {
