@@ -31,15 +31,27 @@ public class Cliente {
 
 			flujoSalida.writeUTF(nombreUsuario);
 			
-			String respuesta = flujoEntrada.readUTF();
+			String acceso = flujoEntrada.readUTF();
 			
-			if (respuesta.equalsIgnoreCase("ok")) {
+			if (acceso.equalsIgnoreCase("ok")) {
 				System.out.println("Bienvenido, " + nombreUsuario + "!");
 				while (true) {
-					System.out.print("$" + nombreUsuario + " > ");
-					String msg = scanner.nextLine();
-					flujoSalida.writeUTF(msg);
-					respuesta = flujoEntrada.readUTF();
+					String pregunta = flujoEntrada.readUTF();
+					System.out.println("Q: " + pregunta);
+					
+					for (int i = 0; i < 4; i++) {
+						String opciones = flujoEntrada.readUTF();
+						System.out.println((i + 1) + ".- " + opciones);
+					}
+					
+					System.out.print("R = ");
+					
+					String respuesta = scanner.nextLine();
+					flujoSalida.writeUTF(respuesta);
+					
+					String acerto = flujoEntrada.readUTF();
+					System.out.println(acerto);
+
 				}
 			} else {
 				System.out.println("[ + ] Error: Nombre de usuario ya existe");
@@ -47,7 +59,7 @@ public class Cliente {
 			}
 
 			
-
+			socket.close();
 		} catch (Exception e) {
 			System.out.println("[ - ] Error: No se puede conectar con el host. " + e.getMessage());
 

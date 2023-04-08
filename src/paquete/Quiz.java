@@ -35,6 +35,7 @@ public class Quiz {
         System.out.println("Bienvenido al quiz!");
         System.out.println("Presiona Enter para comenzar...");
         scanner.nextLine();
+        
 
         for (Pregunta pregunta : preguntas) {
             System.out.println(pregunta.getPregunta());
@@ -51,6 +52,10 @@ public class Quiz {
             boolean respuestaCorrecta = pregunta.verificaRespuesta(respuesta);
             System.out.println("Respuesta: " + (respuestaCorrecta ? "Correcta" : "Incorrecta"));
         }
+    }
+    
+    public List<Pregunta> getP() {
+    	return preguntas;
     }
 
     //Modificar las preguntas existentes

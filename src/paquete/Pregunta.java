@@ -5,11 +5,13 @@ public class Pregunta {
 	private String pregunta;
 	private String[] opciones;
 	private String respuestaCorrecta;
+	private int valor;
 	
-	public Pregunta(String pregunta, String[] opciones, String respuestaCorrecta) {
+	public Pregunta(String pregunta, String[] opciones, String respuestaCorrecta, int valor) {
 		this.pregunta = pregunta;
 		this.opciones = opciones;
 		this.respuestaCorrecta = respuestaCorrecta;
+		this.valor = valor;
 	}
 	
 	public String getPregunta() {
@@ -22,6 +24,10 @@ public class Pregunta {
 
 	public String getRespuestaCorrecta() {
 		return respuestaCorrecta;
+	}
+	
+	public int getValor() {
+		return valor;
 	}
 
 	public boolean verificaRespuesta(String opcion) {

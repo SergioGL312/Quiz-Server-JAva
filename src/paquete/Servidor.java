@@ -25,12 +25,12 @@ public class Servidor {
 
 	public void iniciarServidor() {
 		
-		agregarPregunta("1 + 1 = ?",new String[] {"2", "4", "5", "1"}, "2");
-		agregarPregunta("1 + 7 = ?",new String[] {"2", "8", "5", "1"}, "8");
+		agregarPregunta("1 + 1 = ?",new String[] {"2", "4", "5", "1"}, "2", 10);
+		agregarPregunta("1 + 7 = ?",new String[] {"2", "8", "5", "1"}, "8", 5);
 		
 		try (ServerSocket servidor = new ServerSocket(PUERTO)) {
 			System.out.println("[ + ] Servidor iniciado. Esperando conexiones . . .\n");
-			quiz.mostrarPreguntas();
+
 			while (true) {
 				Socket clienteSocket = servidor.accept();
 				System.out.println("[ * ] Nuevo cliente conectado: " + clienteSocket.getRemoteSocketAddress());
@@ -66,7 +66,6 @@ public class Servidor {
 	    for (Jugador jugador : listaJugadores) {
 			System.out.println(jugador.getNombreJugador());
 		}
-	    System.out.println("\n");
 	}
 
 	public void eliminarJugador(String nombreJugador) {
@@ -80,11 +79,14 @@ public class Servidor {
         }
     }
 	
-	public void agregarPregunta(String pregunta, String[] opcs, String resCorrecta) {
-		Pregunta p = new Pregunta(pregunta, opcs, resCorrecta);
+	public void agregarPregunta(String pregunta, String[] opcs, String resCorrecta, int valor) {
+		Pregunta p = new Pregunta(pregunta, opcs, resCorrecta, valor);
 		quiz.agregarPregunta(p);
 	}
 
+	public Quiz getQuiz() {
+	    return this.quiz;
+	}
 }
 
 class ManejadorDeCliente implements Runnable {
@@ -119,14 +121,29 @@ class ManejadorDeCliente implements Runnable {
 			} else {
 				servidor.getNombreJugadores();
 				salida.writeUTF("ok");
-				while (true) {
-					
-					String mensaje = entrada.readUTF();
 
-					System.out.println("[ + ] Mensaje recibido desde " + clienteSocket.getInetAddress() + ": " + mensaje);
+				List<Pregunta> preguntas = servidor.getQuiz().getP();
+	            Iterator<Pregunta> iterPreguntas = preguntas.iterator();
+	            while (iterPreguntas.hasNext()) {
+	                Pregunta pregunta = iterPreguntas.next();
 
-					salida.writeUTF(mensaje);
-				}
+	                salida.writeUTF(pregunta.getPregunta());
+	                
+	                for (String opcion : pregunta.getOpciones()) {
+	                    salida.writeUTF(opcion);
+	                }
+
+	                String respuesta = entrada.readUTF();
+	                
+	                if (respuesta.equals(pregunta.getRespuestaCorrecta())) {
+	                    jugador.agregarPuntos(pregunta.getValor());
+	                    salida.writeUTF("Correcto");
+	                } else {
+	                	salida.writeUTF("Incorrecto");
+	                }
+	            }
+	            salida.writeUTF("Tu puntaje final es: " + jugador.getPuntos());
+				
 			}
 			
 			
