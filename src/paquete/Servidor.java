@@ -27,10 +27,11 @@ public class Servidor {
 		
 		agregarPregunta("1 + 1 = ?",new String[] {"2", "4", "5", "1"}, "2", 10);
 		agregarPregunta("1 + 7 = ?",new String[] {"2", "8", "5", "1"}, "8", 5);
+		agregarPregunta("1 + 0 = ?",new String[] {"2", "8", "5", "1"}, "1", 5);
 		
 		try (ServerSocket servidor = new ServerSocket(PUERTO)) {
 			System.out.println("[ + ] Servidor iniciado. Esperando conexiones . . .\n");
-
+			
 			while (true) {
 				Socket clienteSocket = servidor.accept();
 				System.out.println("[ * ] Nuevo cliente conectado: " + clienteSocket.getRemoteSocketAddress());
@@ -124,6 +125,7 @@ class ManejadorDeCliente implements Runnable {
 
 				List<Pregunta> preguntas = servidor.getQuiz().getP();
 	            Iterator<Pregunta> iterPreguntas = preguntas.iterator();
+	            salida.writeInt(preguntas.size());
 	            while (iterPreguntas.hasNext()) {
 	                Pregunta pregunta = iterPreguntas.next();
 
@@ -146,7 +148,8 @@ class ManejadorDeCliente implements Runnable {
 				
 			}
 			
-			
+			servidor.eliminarJugador(nombreUsuario);
+			servidor.getNombreJugadores();
 		} catch (IOException e) {
 			System.out.println(
 					"[ * ] El cliente " + clienteSocket.getRemoteSocketAddress() + " ha cerrado la conexion.\n");

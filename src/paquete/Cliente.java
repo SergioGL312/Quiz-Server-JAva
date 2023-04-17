@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Cliente {
 
-	private String HOST = "192.168.0.6";
+	private String HOST = "localhost";
 	private static final int PORT = 1090;
 
 	public Cliente() {
@@ -34,8 +34,10 @@ public class Cliente {
 			String acceso = flujoEntrada.readUTF();
 			
 			if (acceso.equalsIgnoreCase("ok")) {
+				int k = 0;
+				int cantPreguntas = flujoEntrada.readInt();
 				System.out.println("Bienvenido, " + nombreUsuario + "!");
-				while (true) {
+				while (k < cantPreguntas) {
 					String pregunta = flujoEntrada.readUTF();
 					System.out.println("Q: " + pregunta);
 					
@@ -51,14 +53,17 @@ public class Cliente {
 					
 					String acerto = flujoEntrada.readUTF();
 					System.out.println(acerto);
-
+					k++;
 				}
+				String puntajefinal = flujoEntrada.readUTF();
+				System.out.println("fs " + puntajefinal);
 			} else {
 				System.out.println("[ + ] Error: Nombre de usuario ya existe");
 				iniciarCliente();
 			}
 
-			
+			flujoEntrada.close();
+			flujoSalida.close();
 			socket.close();
 		} catch (Exception e) {
 			System.out.println("[ - ] Error: No se puede conectar con el host. " + e.getMessage());

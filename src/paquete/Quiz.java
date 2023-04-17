@@ -12,10 +12,12 @@ public class Quiz {
     private Scanner scanner;
     private int tiempoLimite = 5;
     private Timer temporizador = new Timer();
+    private int cant;
 
     public Quiz() {
         this.preguntas = new ArrayList<>();
         this.scanner = new Scanner(System.in);
+        this.cant = 0;
     }
 
     public void agregarPregunta(Pregunta pregunta) {
@@ -57,6 +59,11 @@ public class Quiz {
     public List<Pregunta> getP() {
     	return preguntas;
     }
+
+	public int getCant() {
+		return preguntas.size();
+	}
+    
 
     //Modificar las preguntas existentes
 	//Reiniciar Quiz
